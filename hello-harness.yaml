@@ -1,0 +1,38 @@
+# Part 1: The Deployment (The "Work")
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harness-nginx
+  labels:
+    app: hello-harness
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-harness
+  template:
+    metadata:
+      labels:
+        app: hello-harness
+    spec:
+      containers:
+      - name: nginx
+        image: nginxdemos/hello:plain-text
+        ports:
+        - containerPort: 80
+---
+# Part 2: The Service (The "Access")
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: hello-harness # This MUST match the labels above
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+  
